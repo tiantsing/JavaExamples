@@ -11,16 +11,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class CookieExample1
+ * Servlet implementation class DoLoginServlet
  */
-@WebServlet("/CookieExample1")
-public class CookieExample1 extends HttpServlet {
+@WebServlet("/DoLoginServlet")
+public class DoLoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CookieExample1() {
+    public DoLoginServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -29,24 +29,32 @@ public class CookieExample1 extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html;charset=UTF-8");
-	    PrintWriter	out=response.getWriter();
-	    String userName ="";
-		String checked = "";
-		//得到客户端保存的Cookie数据
-		Cookie[] cookies = request.getCookies();
-		for (int i = 0;cookies!=null && i < cookies.length; i++) {
-			if("userName".equals(cookies[i].getName())){
-				userName = cookies[i].getValue();
-				checked = "checked='checked'";
+		PrintWriter out = response.getWriter();
+		//获取表单数据
+		String userName = request.getParameter("userName");
+		String pwd = request.getParameter("pwd");
+		String remember = request.getParameter("remember");
+		
+		Cookie ck = new Cookie("userName", userName);
+		ck.setPath("/");
+		//处理业务逻辑
+		//分发转向
+		if("tom".equals(userName)&&"123".equals(pwd)){
+			if(remember!=null){
+				ck.setMaxAge(Integer.MAX_VALUE);//设置Cookie的有效保存时间
+			}else{
+				ck.setMaxAge(0);//删除 Cookie
 			}
+			response.addCookie(ck);//将Cookie写回到客户端
+			out.write("登录成功！");
+		}else{
+			out.write("登录失败！");
+			//设置2秒跳到重新登录
+			response.setHeader("refresh", "2;url="+request.getContextPath()+"/CookieExample1");
 		}
-	    out.write("<form action='"+request.getContextPath()+"/DoLoginServlet' method='post'>");
-		out.write("用户名：<input type='text' name='userName' value='"+userName+"'/><br/>");
-		out.write("密码：<input type='password' name='pwd'/><br/>");
-		out.write("<input type='checkbox' name='remember' "+checked+" />记住用户名<br/>");
-		out.write("<input type='submit' value='登录'/><br/>");
-		out.write("</form>");
+		
 	}
 
 	/**

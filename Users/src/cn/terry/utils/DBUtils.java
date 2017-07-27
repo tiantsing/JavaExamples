@@ -1,4 +1,4 @@
-package cn.terrytian.utils;
+package cn.terry.utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,9 +13,9 @@ public class DBUtils {
     private static String user;
     private static String password;
     static{
-    	//用于加载properties数据
 		ResourceBundle rb = ResourceBundle.getBundle("dbinfo");
-    	driverClass = rb.getString("driverClass");
+		//������4��������ֵ
+		driverClass = rb.getString("driverClass");
 		url = rb.getString("url");
 		user = rb.getString("user");
 		password = rb.getString("password");
@@ -25,12 +25,12 @@ public class DBUtils {
 			e.printStackTrace();
 		}
 	}
-	//
+	//�õ�����
 	public static Connection getConnection() throws SQLException{
 		
 		return DriverManager.getConnection(url, user, password);
 	}
-	//
+	//�ر���Դ 
 	public static void closeAll(ResultSet rs,Statement stmt,Connection conn){
 			if(rs!=null){
 				try {
